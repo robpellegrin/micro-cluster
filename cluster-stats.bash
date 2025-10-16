@@ -21,9 +21,9 @@
 #
 
 get_node_stats() {
-    IP_ADDRESS=$1
+  IP_ADDRESS=$1
 
-    read -r HOSTNAME CPU_TEMP CPU_FREQ MEM_TOTAL MEM_USED LOAD1 LOAD5 LOAD15 <<<$(ssh mpi@$IP_ADDRESS '
+  read -r HOSTNAME CPU_TEMP CPU_FREQ MEM_TOTAL MEM_USED LOAD1 LOAD5 LOAD15 <<<$(ssh mpi@$IP_ADDRESS '
     HOSTNAME=$(cat /etc/hostname)
     CPU_TEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
     CPU_FREQ=$(awk "{ sum += \$1; count++ } END { print sum / count }" /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq)
@@ -34,15 +34,15 @@ get_node_stats() {
     echo "$HOSTNAME $CPU_TEMP $CPU_FREQ $MEM_TOTAL $MEM_USED $LOAD1 $LOAD5 $LOAD15"
   ')
 
-    echo "Host: $HOSTNAME"
-    echo "Temp: $CPU_TEMP"
-    echo "Freq: $CPU_FREQ"
-    echo "Total Mem: $MEM_TOTAL"
-    echo "Used Mem: $MEM_USED"
-    echo "1 Min: $LOAD1"
-    echo "5 Min: $LOAD5"
-    echo "15 Min: $LOAD15"
-    echo
+  echo "Host: $HOSTNAME"
+  echo "Temp: $CPU_TEMP"
+  echo "Freq: $CPU_FREQ"
+  echo "Total Mem: $MEM_TOTAL"
+  echo "Used Mem: $MEM_USED"
+  echo "1 Min: $LOAD1"
+  echo "5 Min: $LOAD5"
+  echo "15 Min: $LOAD15"
+  echo
 }
 
 # Function must be exported before it can be used with GNU Parallel
@@ -52,4 +52,3 @@ export -f get_node_stats
 parallel get_node_stats ::: 192.168.5.5{0..5}
 
 exit 0
-
