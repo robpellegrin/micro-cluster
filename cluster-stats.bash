@@ -2,7 +2,7 @@
 #
 # Author: Rob Pellegrin
 # Date:   10/11/2025
-# file:   cluster-stats.bash
+# File:   cluster-stats.bash
 # Description:
 #   This script collects system statistics from all nodes in the cluster in
 #   parallel using GNU Parallel and SSH. It connects to each node, retrieves:
@@ -12,13 +12,22 @@
 #     - Total and used memory
 #     - 1, 5, and 15-minute load averages
 #
-#   and prints the results to the console.
+#   and writes them to a file 'output.txt'.
 #
 #   All commands are designed to be lightweight and minimal, using data
 #   from /proc and /sys to minimize CPU, memory, and I/O overhead. The goal is
 #   to collect useful metrics without negatively impacting with the performance
 #   of the cluster.
 #
+
+cleanup() {
+  echo
+  echo "Cleaning up and exiting..."
+  rm -rf output.txt
+  exit 0
+}
+
+trap cleanup SIGINT SIGTERM SIGHUP SIGQUIT
 
 get_node_stats() {
   IP_ADDRESS=$1
@@ -34,20 +43,20 @@ get_node_stats() {
     echo "$HOSTNAME $CPU_TEMP $CPU_FREQ $MEM_TOTAL $MEM_USED $LOAD1 $LOAD5 $LOAD15"
   ')
 
-  echo "Host: $HOSTNAME"
-  echo "Temp: $CPU_TEMP"
-  echo "Freq: $CPU_FREQ"
-  echo "Total Mem: $MEM_TOTAL"
-  echo "Used Mem: $MEM_USED"
-  echo "1 Min: $LOAD1"
-  echo "5 Min: $LOAD5"
-  echo "15 Min: $LOAD15"
+  echo "node_temp{host=\"$HOSTNAME\"} $CPU_TEMP"
+  echo "node_freq{host=\"$HOSTNAME\"} $CPU_FREQ"
+  echo "node_total_mem{host=\"$HOSTNAME\"} $MEM_TOTAL"
+  echo "node_used_mem{host=\"$HOSTNAME\"} $MEM_USED"
+  echo "node_load1{host=\"$HOSTNAME\"} $LOAD1"
+  echo "node_load5{host=\"$HOSTNAME\"} $LOAD5"
+  echo "node_load15{host=\"$HOSTNAME\"} $LOAD15"
   echo
 }
 
-# Function must be exported before it can be used with GNU Parallel
+# Function must be exported before it can be used with GNU Parallel.
 export -f get_node_stats
 
-# IP scheme for cluster
-parallel get_node_stats ::: 192.168.5.5{0..5} >> output.txt
+# IP scheme for cluster is 192.168.5.5x
+parallel get_node_stats ::: 192.168.5.5{0..5} >>output.txt
+
 exit 0
