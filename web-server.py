@@ -1,8 +1,9 @@
 import http.server
 import socketserver
 import subprocess
-import os
 from pathlib import Path
+import signal
+import sys
 
 PORT = 2146
 BASH_SCRIPT = './cluster-stats.bash'
@@ -13,7 +14,9 @@ class CustomHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         try:
             result = subprocess.run(
-                [BASH_SCRIPT], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                [BASH_SCRIPT], check=True,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
         except subprocess.CalledProcessError as e:
             self.send_response(500)
             self.end_headers()
@@ -42,7 +45,18 @@ class CustomHandler(http.server.SimpleHTTPRequestHandler):
                 print(f"Warning: Could not delete output file: {e}")
 
 
+def handle_shutdown(signal, frame):
+    sys.exit(0)
+
+
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, handle_shutdown)
+
     with socketserver.TCPServer(("", PORT), CustomHandler) as httpd:
         print(f"Serving on port {PORT}")
-        httpd.serve_forever()
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            pass
+        finally:
+            print("Server stopped.")
