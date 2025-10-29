@@ -1,3 +1,20 @@
+"""
+ Cluster Node Statistics HTTP Exporter
+
+This Python script runs a simple HTTP server that executes a Bash script
+(`cluster-stats.bash`) to gather node statistics for an OpenMPI cluster and
+serves the results over HTTP.
+
+The output is written to a temporary file ('output.txt') which is then returned
+as the response to HTTP GET requests. After serving the content, the temporary
+file is deleted.
+
+This setup is intended for Prometheus to scrape cluster statistics at the
+configured endpoint.
+
+Author: Rob Pellegrin
+"""
+
 import http.server
 import socketserver
 import subprocess
