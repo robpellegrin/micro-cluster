@@ -3,10 +3,6 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 
 ## Hardware
 
-<table>
-<tr>
-<td width="50%" valign="top">
-
 ### 🖥️ Cluster Overview ###
 
 | Component | Description |
@@ -17,9 +13,6 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 | **MPI Implementation** | `OpenMPI v4.1.4` |
 | **Network Topology** | `Ethernet` |
 | **Filesystem Sharing** | `NFS` |
-
-</td>
-<td width="50%" valign="top">
 
 ### ⚙️ Individual Node Specifications ###
 | Component | Specification |
@@ -32,14 +25,6 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 | **Cooling** | `Passive heatsinks` |
 | **Power** | `5W Full Load / < 1W Idle` |
 
-</td>
-</tr>
-</table>
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
 ### 🧩 Networking ###
 | Component | Description |
 |------------|---------------|
@@ -47,17 +32,11 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 | **Topology** | `Star`
 | **IP Scheme:** | `192.168.5.50–56` |
 
-</td>
-<td width="50%" valign="top">
-
 ### ⚡ Power & Cooling ###
 | Component | Description |
 |------------|---------------|
 |**Power Supply:** | `10-port USB hub`|
 |**Cooling:** | ` Single 120mm USB fan` |
 |**Total Power Consumption:** | `~50W under load` |
-</td>
-</tr>
-</table>
 
 ---
