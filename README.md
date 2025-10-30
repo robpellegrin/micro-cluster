@@ -20,9 +20,9 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 | **Board Model** | [`Sweet Potato AML-S905X-CC-V2`](https://libre.computer/products/aml-s905x-cc-v2/) |
 | **CPU** | `4 ARM Cortex-A53 @ 1.416GHz ` |
 | **RAM** | `2GB 32-bit DDR4 SDRAM` |
-| **Storage** | `16GB EMMC` |
+| **Storage** | `16GB eMMC` |
 | **Networking** | `100 Mb Ethernet` |
-| **Cooling** | `Passive heatsinks` |
+| **Cooling** | `Passive Heatsinks` |
 | **Power** | `5W Full Load / < 1W Idle` |
 
 ### 🧩 Networking ###
