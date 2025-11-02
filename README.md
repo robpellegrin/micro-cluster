@@ -38,8 +38,6 @@ Experiments with distributed algorithms and data structures on a cluster of smal
   </tr>
 </table>
 
----
-
 <table>
   <tr>
     <td width="50%" valign="top">
@@ -66,7 +64,5 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 </td>
   </tr>
 </table>
-
----
 
 ---
