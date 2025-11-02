@@ -1,0 +1,79 @@
+================================================================================
+HPLinpack 2.3  --  High-Performance Linpack benchmark  --   December 2, 2018
+Written by A. Petitet and R. Clint Whaley,  Innovative Computing Laboratory, UTK
+Modified by Piotr Luszczek, Innovative Computing Laboratory, UTK
+Modified by Julien Langou, University of Colorado Denver
+================================================================================
+
+An explanation of the input/output parameters follows:
+T/V    : Wall time / encoded variant.
+N      : The order of the coefficient matrix A.
+NB     : The partitioning blocking factor.
+P      : The number of process rows.
+Q      : The number of process columns.
+Time   : Time in seconds to solve the linear system.
+Gflops : Rate of execution for solving the linear system.
+
+The following parameter values will be used:
+
+N      :   33000 
+NB     :      32       64 
+PMAP   : Row-major process mapping
+P      :       1        2 
+Q      :      28       14 
+PFACT  :   Right 
+NBMIN  :       4 
+NDIV   :       2 
+RFACT  :   Right 
+BCAST  :  2ringM 
+DEPTH  :       0 
+SWAP   : Spread-roll (long)
+L1     : transposed form
+U      : no-transposed form
+EQUIL  : yes
+ALIGN  : 8 double precision words
+
+--------------------------------------------------------------------------------
+
+- The matrix A is randomly generated for each test.
+- The following scaled residual check will be computed:
+      ||Ax-b||_oo / ( eps * ( || x ||_oo * || A ||_oo + || b ||_oo ) * N )
+- The relative machine precision (eps) is taken to be               1.110223e-16
+- Computational tests pass if scaled residuals are less than                32.0
+
+================================================================================
+T/V                N    NB     P     Q               Time                 Gflops
+--------------------------------------------------------------------------------
+WR03R2R4       33000    32     1    28            1279.69             1.8723e+01
+HPL_pdgesv() start time Sun Nov  2 13:31:43 2025
+
+HPL_pdgesv() end time   Sun Nov  2 13:53:03 2025
+
+--------------------------------------------------------------------------------
+||Ax-b||_oo/(eps*(||A||_oo*||x||_oo+||b||_oo)*N)=   1.17082300e+07 ...... FAILED
+||Ax-b||_oo  . . . . . . . . . . . . . . . . . =           4.815172
+||A||_oo . . . . . . . . . . . . . . . . . . . =        8352.770495
+||A||_1  . . . . . . . . . . . . . . . . . . . =        8372.585911
+||x||_oo . . . . . . . . . . . . . . . . . . . =          13.438905
+||x||_1  . . . . . . . . . . . . . . . . . . . =       78107.247822
+||b||_oo . . . . . . . . . . . . . . . . . . . =           0.499996
+================================================================================
+T/V                N    NB     P     Q               Time                 Gflops
+--------------------------------------------------------------------------------
+WR03R2R4       33000    64     1    28            1257.03             1.9060e+01
+HPL_pdgesv() start time Sun Nov  2 13:53:12 2025
+
+HPL_pdgesv() end time   Sun Nov  2 14:14:09 2025
+
+--------------------------------------------------------------------------------
+||Ax-b||_oo/(eps*(||A||_oo*||x||_oo+||b||_oo)*N)=   2.10047118e-03 ...... PASSED
+================================================================================
+T/V                N    NB     P     Q               Time                 Gflops
+--------------------------------------------------------------------------------
+WR03R2R4       33000    32     2    14            1127.42             2.1252e+01
+HPL_pdgesv() start time Sun Nov  2 14:14:19 2025
+
+HPL_pdgesv() end time   Sun Nov  2 14:33:06 2025
+
+--------------------------------------------------------------------------------
+||Ax-b||_oo/(eps*(||A||_oo*||x||_oo+||b||_oo)*N)=   2.04301341e-03 ...... PASSED
