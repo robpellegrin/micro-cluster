@@ -3,7 +3,6 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 
 ## Hardware
 
-
 <table>
   <tr>
     <td width="50%" valign="top">
@@ -64,5 +63,9 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 </td>
   </tr>
 </table>
+
+
+## Note About Performance
+> The nodes are connected to a gigabit switch via 100 Mb Ethernet, which quickly becomes a bottleneck for applications that involve frequent or heavy communication between nodes (like the HPL benchmark). For workloads with moderate to high inter-node messaging, network latency and bandwidth limitations will significantly impact performance.
 
 ---
