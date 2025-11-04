@@ -23,8 +23,8 @@ import signal
 import sys
 
 PORT = 2146
-BASH_SCRIPT = './cluster-stats.bash'
-OUTPUT_FILE = 'output.txt'
+BASH_SCRIPT = "./cluster-stats.bash"
+OUTPUT_FILE = "/tmp/cluster-stats.output"
 
 
 class CustomHandler(http.server.SimpleHTTPRequestHandler):
