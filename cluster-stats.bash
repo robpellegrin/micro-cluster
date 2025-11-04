@@ -20,10 +20,12 @@
 #   of the cluster.
 #
 
+OUTPUT_FILE="/tmp/cluster-stats.output"
+
 cleanup() {
   echo
   echo "Cleaning up and exiting..."
-  rm -rf output.txt
+  rm -rf $OUTPUT_FILE
   exit 0
 }
 
@@ -57,6 +59,6 @@ get_node_stats() {
 export -f get_node_stats
 
 # IP scheme for cluster is 192.168.5.5x
-parallel get_node_stats ::: 192.168.5.5{0..6} >>output.txt
+parallel get_node_stats ::: 192.168.5.5{0..6} >>"$OUTPUT_FILE"
 
 exit 0
