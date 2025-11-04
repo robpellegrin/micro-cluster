@@ -66,6 +66,6 @@ get_node_stats() {
 export -f get_node_stats
 
 # IP scheme for cluster is 192.168.5.5x
-parallel get_node_stats ::: 192.168.5.5{0..6}
+parallel get_node_stats ::: 192.168.5.5{0..6} >>$OUTPUT_FILE
 
 exit 0
