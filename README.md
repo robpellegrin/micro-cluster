@@ -15,6 +15,7 @@ Experiments with distributed algorithms and data structures on a cluster of smal
   - [3.  Real-time Monitoring with Prometheus \& Grafana](#3--real-time-monitoring-with-prometheus--grafana)
     - [What we're watching](#what-were-watching)
   - [4. Using Ansible for Sanity](#4-using-ansible-for-sanity)
+  - [5. Performance](#5-performance)
 
 
 ## 1. Hardware
@@ -84,7 +85,7 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 > The nodes are connected to a gigabit switch via 100 Mb Ethernet, which quickly becomes a bottleneck for applications that involve frequent or heavy communication between nodes (like the HPL benchmark). For workloads with moderate to high inter-node messaging, network latency and bandwidth limitations will significantly impact performance.
 
 ## 3.  Real-time Monitoring with Prometheus & Grafana
-With Prometheus and Grafana, we can easily create a visual dashboard that can be used to quickly detect performance issues and optionally get notified when a node goes down or a job stalls.
+With [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/), we can easily create a visual dashboard that can be used to quickly detect performance issues and optionally get notified when a node goes down or a job stalls.
 
 ### What we're watching
 
@@ -120,5 +121,9 @@ scrape_configs:
 
 The playbooks/roles used to manage this cluster are in a dedicated ansible repository:
 - https://github.com/robpellegrin/ansible
+
+## 5. Performance
+
+For more on performance, jump in the [`hpl`](https://github.com/robpellegrin/micro-cluster/tree/main/hpl) directory.
 
 ---
