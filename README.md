@@ -14,7 +14,7 @@ Experiments with distributed algorithms and data structures on a cluster of smal
   - [2. Note On SBC Limitations](#2-note-on-sbc-limitations)
   - [3.  Real-time Monitoring with Prometheus \& Grafana](#3--real-time-monitoring-with-prometheus--grafana)
     - [What we're watching](#what-were-watching)
-  - [4. Ansible](#4-ansible)
+  - [4. Using Ansible for Sanity](#4-using-ansible-for-sanity)
 
 
 ## 1. Hardware
@@ -114,10 +114,11 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:2146']
 ```
-## 4. Ansible
+## 4. Using Ansible for Sanity
 
 [Ansible](https://docs.ansible.com/ansible/latest/index.html) is a critical component of cluster operations. Without it we would be manually SSH‑ing into each node (one at a time), installing packages, compiling OpenBLAS, deploying HPL, etc. Ansible allows us to define the desired state of every node in a single, idempotent playbook and execute those changes on all hosts simultaneously. This guarantees identical configuration across the cluster and, most importantly, eliminates monotonous SSH sessions.
 
-The playbooks/roles used to manage this cluster are in a dedicated [ansible](https://github.com/robpellegrin/ansible) repository.
+The playbooks/roles used to manage this cluster are in a dedicated ansible repository:
+- https://github.com/robpellegrin/ansible
 
 ---
