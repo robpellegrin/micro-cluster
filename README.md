@@ -100,6 +100,7 @@ With Prometheus and Grafana, we can easily create a visual dashboard that can be
   <br><i>Note: CPU Frequency is linear because the CPU governor on each node has been explicitly  set to 'performance'. </i> </figcaption>
 </figure>
 
+<br>
 I found it easier to use a custom Prometheus exporter instead of trying to adapt an existing one. Running `python3 ./web-server.py` makes the node metrics available via HTTP. When an HTTP request hits the python web server at port `2146`, it executes `cluster-stats.bash`, then serves the resulting output.
 
 After installing Prometheus, add a new scape configuration to `prometheus.yml`.
