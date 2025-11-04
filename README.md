@@ -7,10 +7,10 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 - [micro-cluster](#micro-cluster)
   - [Table of Contents](#table-of-contents)
   - [1. Hardware](#1-hardware)
-    - [🖥️ Cluster Overview](#️-cluster-overview)
-    - [⚙️ Individual Node Specifications](#️-individual-node-specifications)
-    - [🧩 Networking](#-networking)
-    - [⚡ Power \& Cooling](#-power--cooling)
+    - [1.1 🖥️ Cluster Overview](#11-️-cluster-overview)
+    - [1.2 ⚙️ Individual Node Specifications](#12-️-individual-node-specifications)
+    - [1.3 🧩 Networking](#13--networking)
+    - [1.4 ⚡ Power \& Cooling](#14--power--cooling)
   - [2. Note On SBC Limitations](#2-note-on-sbc-limitations)
   - [3.  Real-time Monitoring with Prometheus \& Grafana](#3--real-time-monitoring-with-prometheus--grafana)
     - [What we're watching](#what-were-watching)
@@ -20,11 +20,8 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 
 ## 1. Hardware
 
-<table>
-  <tr>
-    <td width="50%" valign="top">
 
-### 🖥️ Cluster Overview
+### 1.1 🖥️ Cluster Overview
 
 | Component              | Description                                    |
 | ---------------------- | ---------------------------------------------- |
@@ -35,10 +32,8 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 | **Network Topology**   | `Ethernet`                                     |
 | **Filesystem Sharing** | `NFS`                                          |
 
-</td>
-<td width="50%" valign="top">
 
-### ⚙️ Individual Node Specifications
+### 1.2 ⚙️ Individual Node Specifications
 
 | Component       | Specification                                                                        |
 | --------------- | ------------------------------------------------------------------------------------ |
@@ -50,15 +45,7 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 | **Cooling**     | `Passive heatsinks`                                                                  |
 | **Power**       | `5 W full load / < 1 W idle`                                                         |
 
-</td>
-  </tr>
-</table>
-
-<table>
-  <tr>
-    <td width="50%" valign="top">
-
-### 🧩 Networking
+### 1.3 🧩 Networking
 
 | Component     | Description                                                                                               |
 | ------------- | --------------------------------------------------------------------------------------------------------- |
@@ -66,20 +53,13 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 | **Topology**  | `Star`                                                                                                    |
 | **IP Scheme** | `192.168.5.50–56`                                                                                         |
 
-</td>
-<td width="50%" valign="top">
-
-### ⚡ Power & Cooling
+### 1.4 ⚡ Power & Cooling
 
 | Component                   | Description             |
 | --------------------------- | ----------------------- |
 | **Power Supply**            | `10-port USB hub`       |
 | **Cooling**                 | `Single 120 mm USB fan` |
 | **Total Power Consumption** | `~50 W under load`      |
-
-</td>
-  </tr>
-</table>
 
 ## 2. Note On SBC Limitations
 > The nodes are connected to a gigabit switch via 100 Mb Ethernet, which quickly becomes a bottleneck for applications that involve frequent or heavy communication between nodes (like the HPL benchmark). For workloads with moderate to high inter-node messaging, network latency and bandwidth limitations will significantly impact performance.
@@ -98,10 +78,8 @@ With [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/), w
 <figure>
   <img src=".images/grafana-screenshot.png" alt="HPL performance chart" width="1000">
   <figcaption>Figure 1: Grafana dashboard showing current and historical information for the (idle) SBC cluster.
-  <br><i>Note: CPU Frequency is linear because the CPU governor on each node has been explicitly  set to 'performance'. </i> </figcaption>
+  <br><i>Note: CPU Frequency is linear because the CPU governor on each node has been explicitly  set to 'performance'. </i><br> </figcaption>
 </figure>
-
-
 <br>
 
 I found it easier to use a custom Prometheus exporter instead of trying to adapt an existing one. Running `python3 ./web-server.py` makes the node metrics available via HTTP. When an HTTP request hits the python web server at port `2146`, it executes `cluster-stats.bash`, then serves the resulting output.
