@@ -34,21 +34,28 @@ trap cleanup SIGINT SIGTERM SIGHUP SIGQUIT
 get_node_stats() {
   IP_ADDRESS=$1
 
-  read -r HOSTNAME CPU_TEMP CPU_FREQ MEM_TOTAL MEM_USED LOAD1 LOAD5 LOAD15 <<<$(ssh mpi@$IP_ADDRESS '
+  read -r HOSTNAME CPU_TEMP CPU_FREQ MEM_TOTAL MEM_USED SWAP_USED LOAD1 LOAD5 LOAD15 <<<$(ssh mpi@$IP_ADDRESS '
     HOSTNAME=$(cat /etc/hostname)
     CPU_TEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
-    CPU_FREQ=$(awk "{ sum += \$1; count++ } END { print sum / count }" /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq)
-    read -r MEM_TOTAL MEM_FREE <<< $(awk "/MemTotal/ {t=\$2} /MemFree/ {f=\$2} END { print t, f }" /proc/meminfo)
-    MEM_USED=$((MEM_TOTAL - MEM_FREE))
     read -r LOAD1 LOAD5 LOAD15 _ < /proc/loadavg
 
-    echo "$HOSTNAME $CPU_TEMP $CPU_FREQ $MEM_TOTAL $MEM_USED $LOAD1 $LOAD5 $LOAD15"
+    CPU_FREQ=$(awk "{ sum += \$1; count++ } END { print sum / count }" \
+      /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq)
+
+    read -r MEM_TOTAL MEM_FREE SWAP_USED <<< \
+      $(awk "/MemTotal/ {t=\$2} /MemFree/ {f=\$2} /SwapTotal/ {s=\$2} /SwapFree/ {sf=\$2} \
+      END { print t, f, s-sf }" /proc/meminfo)
+
+    MEM_USED=$((MEM_TOTAL - MEM_FREE))
+
+    echo "$HOSTNAME $CPU_TEMP $CPU_FREQ $MEM_TOTAL $MEM_USED $SWAP_USED $LOAD1 $LOAD5 $LOAD15"
   ')
 
   echo "node_temp{host=\"$HOSTNAME\"} $CPU_TEMP"
   echo "node_freq{host=\"$HOSTNAME\"} $CPU_FREQ"
   echo "node_total_mem{host=\"$HOSTNAME\"} $MEM_TOTAL"
   echo "node_used_mem{host=\"$HOSTNAME\"} $MEM_USED"
+  echo "node_swap_used{host=\"$HOSTNAME\"} $SWAP_USED"
   echo "node_load1{host=\"$HOSTNAME\"} $LOAD1"
   echo "node_load5{host=\"$HOSTNAME\"} $LOAD5"
   echo "node_load15{host=\"$HOSTNAME\"} $LOAD15"
@@ -59,6 +66,6 @@ get_node_stats() {
 export -f get_node_stats
 
 # IP scheme for cluster is 192.168.5.5x
-parallel get_node_stats ::: 192.168.5.5{0..6} >>"$OUTPUT_FILE"
+parallel get_node_stats ::: 192.168.5.5{0..6}
 
 exit 0
