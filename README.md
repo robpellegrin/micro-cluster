@@ -11,15 +11,17 @@ Experiments with distributed algorithms and data structures on a cluster of smal
     - [1.2 ⚙️ Individual Node Specifications](#12-️-individual-node-specifications)
     - [1.3 🧩 Networking](#13--networking)
     - [1.4 ⚡ Power \& Cooling](#14--power--cooling)
-  - [2. Note On SBC Limitations](#2-note-on-sbc-limitations)
+  - [2. Performance \& SBC Limitations](#2-performance--sbc-limitations)
   - [3.  Real-time Monitoring with Prometheus \& Grafana](#3--real-time-monitoring-with-prometheus--grafana)
-    - [What we're watching](#what-were-watching)
-  - [4. Using Ansible for Sanity](#4-using-ansible-for-sanity)
-  - [5. Performance](#5-performance)
-
+    - [3.1 What we're watching and why](#31-what-were-watching-and-why)
+    - [3.2 Prometheus](#32-prometheus)
+    - [3.3 Grafana](#33-grafana)
+  - [4. Power Consumption](#4-power-consumption)
+    - [4.1 Graph of Power Usage](#41-graph-of-power-usage)
+    - [4.2 Analysis](#42-analysis)
+  - [5. Using Ansible to Preserve Sanity](#5-using-ansible-to-preserve-sanity)
 
 ## 1. Hardware
-
 
 ### 1.1 🖥️ Cluster Overview
 
@@ -31,7 +33,6 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 | **MPI Implementation** | `OpenMPI v4.1.4`                               |
 | **Network Topology**   | `Ethernet`                                     |
 | **Filesystem Sharing** | `NFS`                                          |
-
 
 ### 1.2 ⚙️ Individual Node Specifications
 
@@ -61,19 +62,24 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 | **Cooling**                 | `Single 120 mm USB fan` |
 | **Total Power Consumption** | `~50 W under load`      |
 
-## 2. Note On SBC Limitations
+
+## 2. Performance & SBC Limitations
+
 > The nodes are connected to a gigabit switch via 100 Mb Ethernet, which quickly becomes a bottleneck for applications that involve frequent or heavy communication between nodes (like the HPL benchmark). For workloads with moderate to high inter-node messaging, network latency and bandwidth limitations will significantly impact performance.
+
+
+For more on performance, see the [`hpl`](https://github.com/robpellegrin/micro-cluster/tree/main/hpl) directory.
 
 ## 3.  Real-time Monitoring with Prometheus & Grafana
 With [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/), we can easily create a visual dashboard that can be used to quickly detect performance issues and optionally get notified when a node goes down or a job stalls.
 
-### What we're watching
+### 3.1 What we're watching and why
 
-- CPU Frequency: keeps an eye on thermal throttling; a sudden drop usually means the node is overheating.
-- CPU Temperature: another metric to watch for thermal throttling.
-- Load Averages (1 / 5 / 15 min): a quick sanity check on how many processes are competing for CPU.
-- Memory Usage: used out of total; a spike often precedes swapping.
-- Swap Space: TODO
+- **CPU Frequency** – Monitors for thermal throttling; a sudden drop usually indicates overheating.
+- **CPU Temperature** – Another indicator of thermal throttling.
+- **Load Averages (1 / 5 / 15 min)** – Quick sanity check of how many processes are competing for CPU.
+- **Memory Usage** – Proportion of RAM in use; a sudden spike often precedes swapping.
+- **Swap Space** – Any activity is an immediate sign of a memory bottleneck.
 
 <figure>
   <img src=".images/grafana-screenshot.png" alt="HPL performance chart" width="1000">
@@ -82,26 +88,55 @@ With [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/), w
 </figure>
 <br>
 
-I found it easier to use a custom Prometheus exporter instead of trying to adapt an existing one. Running `python3 ./web-server.py` makes the node metrics available via HTTP. When an HTTP request hits the python web server at port `2146`, it executes `cluster-stats.bash`, then serves the resulting output.
+### 3.2 Prometheus
+
+I found it more straight-forward to create a custom Prometheus exporter instead of trying to adapt an existing one. Running `python3 ./web-server.py` makes the node metrics available via HTTP. When an HTTP request hits the python web server at port `2146`, it executes `cluster-stats.bash`, then serves the resulting output.
 
 After installing Prometheus, add a new scape configuration to `prometheus.yml`.
 
 ```
 # prometheus.yml
 scrape_configs:
-  - job_name: cluster_scrape
+  - job_name: cluster_scrape # New job
     static_configs:
       - targets: ['localhost:2146']
 ```
-## 4. Using Ansible for Sanity
+
+### 3.3 Grafana
+
+After installing Grafana, import `grafana-dashboard.json`.
+
+## 4. Power Consumption
+
+Power consumption is an important consideration for any cluster—every watt drawn translates directly into electricity bills, especially when the cluster runs for an extended period of time. A nice benefit of SBCs are their low power consumption, keeping operating costs down.
+
+### 4.1 Graph of Power Usage
+
+<figure>
+  <img src=".images/power-graph.png" alt="HPL performance chart" width="900">
+  <figcaption>Figure 2: Power consumption over 30 minutes. The cluster is idle for 10 minutes, briefly powered off, then put under a heavy load with the HPL benchmark before returning to idle.
+  <br>
+  </figcaption>
+</figure>
+<br>
+
+### 4.2 Analysis
+
+From the graph, we can see:
+
+| State | Wattage |
+|--  |--   |
+| Idle | `~12w` |
+| Heavy Load | `~30w` |
+| Peak | `~35w` |
+
+
+
+## 5. Using Ansible to Preserve Sanity
 
 [Ansible](https://docs.ansible.com/ansible/latest/index.html) is a critical component of cluster operations. Without it we would be manually SSH‑ing into each node (one at a time), installing packages, compiling OpenBLAS, deploying HPL, etc. Ansible allows us to define the desired state of every node in a single, idempotent playbook and execute those changes on all hosts simultaneously. This guarantees identical configuration across the cluster and, most importantly, eliminates monotonous SSH sessions.
 
 The playbooks/roles used to manage this cluster are in a dedicated ansible repository:
 - https://github.com/robpellegrin/ansible
-
-## 5. Performance
-
-For more on performance, jump in the [`hpl`](https://github.com/robpellegrin/micro-cluster/tree/main/hpl) directory.
 
 ---
