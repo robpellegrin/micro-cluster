@@ -80,11 +80,12 @@ With [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/), w
 - **Load Averages (1 / 5 / 15 min)** – Quick sanity check of how many processes are competing for CPU.
 - **Memory Usage** – Proportion of RAM in use; a sudden spike often precedes swapping.
 - **Swap Space** – Any activity is an immediate sign of a memory bottleneck.
+- **Power Usage** – Sudden fluctuation a likely indicator of a node failure.
 
 <figure>
   <img src=".images/grafana-screenshot.png" alt="HPL performance chart" width="1000">
   <figcaption>Figure 1: Grafana dashboard showing current and historical information for the (idle) SBC cluster.
-  <br><i>Note: CPU Frequency is linear because the CPU governor on each node has been explicitly  set to 'performance'. </i><br> </figcaption>
+  <br><i>Note: CPU Frequency appears linear because the CPU governor on each node has been explicitly  set to 'performance'. </i><br> </figcaption>
 </figure>
 <br>
 
