@@ -60,7 +60,7 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 | --------------------------- | ----------------------- |
 | **Power Supply**            | `10-port USB hub`       |
 | **Cooling**                 | `Single 120 mm USB fan` |
-| **Total Power Consumption** | `~50 W under load`      |
+| **Total Power Consumption** | `~30 W under load`      |
 
 
 ## 2. Performance & SBC Limitations
@@ -91,6 +91,8 @@ With [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/), w
 
 ### 3.2 Prometheus
 
+**Prometheus** is an open‑source monitoring system that collects metrics via HTTP pulls, stores them in a time‑series database, and provides a powerful query language (PromQL) for real‑time analysis.  
+
 I found it more straight-forward to create a custom Prometheus exporter instead of trying to adapt an existing one. Running `python3 ./web-server.py` makes the node metrics available via HTTP. When an HTTP request hits the python web server at port `2146`, it executes `cluster-stats.bash`, then serves the resulting output.
 
 After installing Prometheus, add a new scape configuration to `prometheus.yml`.
@@ -105,11 +107,15 @@ scrape_configs:
 
 ### 3.3 Grafana
 
+**Grafana** is a visualization platform that consumes Prometheus (and other data sources), making it simple to build interactive dashboards, set alerts, and monitor the collected metrics at a glance.
+
 After installing Grafana, import `grafana-dashboard.json`.
 
 ## 4. Power Consumption
 
 Power consumption is an important consideration for any cluster—every watt drawn translates directly into electricity bills, especially when the cluster runs for an extended period of time. A nice benefit of SBCs are their low power consumption, keeping operating costs down.
+
+For real‑time power monitoring we use a [THIRDREALITY Zigbee Smart Plug](https://www.amazon.com/THIRDREALITY-Monitoring-Certified-Compatible-SmartThing/dp/B0BPY2KRHH) and [Home Assistant](https://www.home-assistant.io/). The plug reports instantaneous voltage and current to Home Assistant, which exposes the measurements through its [REST API](https://developers.home-assistant.io/docs/api/rest/). We poll that endpoint, parse the JSON payload, and ingest the data into our monitoring stack (Grafana/Prometheus) for continuous graphing and alerting.
 
 ### 4.1 Graph of Power Usage
 
@@ -123,13 +129,13 @@ Power consumption is an important consideration for any cluster—every watt dra
 
 ### 4.2 Analysis
 
-From the graph, we can see:
+The data from Home Assistant can be easily exported into a CSV for numerical analysis.  
+From this data, we get the following:
 
-| State | Wattage |
-|--  |--   |
-| Idle | `~12w` |
-| Heavy Load | `~30w` |
-| Peak | `~35w` |
+| State | Max |  Min | Mean |
+|-------|-----|------|-----|
+| Idle  | `16.1w` | `11.6` | `12.6` |
+| Under Load | `34.5w` | `26.8` | `30.1`|
 
 
 
