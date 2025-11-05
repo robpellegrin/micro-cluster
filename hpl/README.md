@@ -10,13 +10,20 @@ to assess and rank the performance of supercomputers globally. The benchmark mea
 -  `HPL.dat`: This is the input configuration file for the HPL benchmark. It contains various parameters that define the benchmark's size, problem dimensions, and algorithm-specific settings. An explanation of the parameters can be found at [Netlib.org](https://www.netlib.org/benchmark/hpl/tuning.html).
  - `Make.Linux_PII_FBLAS`: Makefile used to compile the HPL executable (included for reference).
 
-## 3. Library used – OpenBLAS & OpenMP
+## 3. Libraries Used – OpenBLAS, OpenMPI & HPL
+For whatever reason, the pre‑compiled binaries shipped with Armbian caused intermittent crashes: MPI processes would terminate on one or two nodes for no obvious reason, OpenBLAS occasionally produced segmentation faults, and the results from the HPL benchmark would sometimes fail the verification check. All of these issues seemed to disappear when building the latest version from source.
+
 - [**OpenBLAS**](https://github.com/OpenMathLib/OpenBLAS)
-  - v0.3.30, built from source
-  - Compiled for the *generic* ARMv8 architecture.  
+  - v0.3.30
+  - Compiled with: `USE_OPENMP=1` (enables OpenMP support inside BLAS)
+  - Built for the *generic* ARMv8 architecture.
     Targeting Cortex‑A53 produced a buggy, unusable build.
 - [**OpenMPI**](https://www.open-mpi.org/)
-  - v5.0.8, built from source
+  - v5.0.8
+  - No special flags
+- [**HPL**](https://netlib.org/benchmark/hpl/)
+  - v2.3
+  - The benchmark was linked against the OpenBLAS and OpenMPI builds defined above. 
 
 ## 4. Best Results
 * **Single Node**
@@ -33,9 +40,6 @@ to assess and rank the performance of supercomputers globally. The benchmark mea
   | OpenBLAS v0.3.30 (ARMv8) | [**25.308**](https://github.com/robpellegrin/micro-cluster/blob/main/hpl/hpl_results/hpl_run_2025-11-03_09-23-00.log) | ~100% faster than ATLAS |
   | ATLAS (pre‑compiled Debian) | - | Default distribution package |
 
-## 5. Summary
-
-TODO
 
 ## 6. References
   |Site                     |URL                                           |
@@ -46,4 +50,3 @@ TODO
   | TOP500                  | https://www.top500.org/                      |
   | Netlib HPL Tuning Guide | https://netlib.org/benchmark/hpl/tuning.html |
 
-*This is not a how‑to guide; it simply documents what was done and the outcome.*
