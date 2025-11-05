@@ -3,10 +3,20 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "adnb9nr",
-    "generation": 40,
+    "namespace": "default",
+    "uid": "37kiyH3gsyQ8TdHbHq7m0kxM1XXdtbxsF9VEIX4Xh7IX",
+    "resourceVersion": "40",
+    "generation": 44,
     "creationTimestamp": "2025-10-18T22:29:17Z",
-    "labels": {},
-    "annotations": {}
+    "labels": {
+      "grafana.app/deprecatedInternalID": "1"
+    },
+    "annotations": {
+      "grafana.app/createdBy": "user:ef0qy95vji39cf",
+      "grafana.app/updatedBy": "user:ef0qy95vji39cf",
+      "grafana.app/updatedTimestamp": "2025-11-04T16:41:37Z",
+      "grafana.app/saved-from-ui": "Grafana v12.2.0 (92f1fba9b4)"
+    }
   },
   "spec": {
     "annotations": [
@@ -19,6 +29,9 @@
           "iconColor": "rgba(0, 211, 255, 1)",
           "name": "Annotations & Alerts",
           "query": {
+            "datasource": {
+              "name": "-- Grafana --"
+            },
             "group": "grafana",
             "kind": "DataQuery",
             "spec": {},
@@ -42,6 +55,9 @@
                   "spec": {
                     "hidden": false,
                     "query": {
+                      "datasource": {
+                        "name": "bf1gobcluv2f4a"
+                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -160,6 +176,9 @@
                   "spec": {
                     "hidden": false,
                     "query": {
+                      "datasource": {
+                        "name": "bf1gobcluv2f4a"
+                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -275,6 +294,9 @@
                   "spec": {
                     "hidden": false,
                     "query": {
+                      "datasource": {
+                        "name": "bf1gobcluv2f4a"
+                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -297,6 +319,9 @@
                   "spec": {
                     "hidden": false,
                     "query": {
+                      "datasource": {
+                        "name": "bf1gobcluv2f4a"
+                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -318,6 +343,9 @@
                   "spec": {
                     "hidden": false,
                     "query": {
+                      "datasource": {
+                        "name": "bf1gobcluv2f4a"
+                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -461,6 +489,9 @@
                   "spec": {
                     "hidden": false,
                     "query": {
+                      "datasource": {
+                        "name": "bf1gobcluv2f4a"
+                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -575,6 +606,9 @@
                   "spec": {
                     "hidden": false,
                     "query": {
+                      "datasource": {
+                        "name": "bf1gobcluv2f4a"
+                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -671,6 +705,9 @@
                   "spec": {
                     "hidden": false,
                     "query": {
+                      "datasource": {
+                        "name": "bf1gobcluv2f4a"
+                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -772,6 +809,120 @@
             "version": "12.2.0"
           }
         }
+      },
+      "panel-8": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bf1gobcluv2f4a"
+                      },
+                      "group": "prometheus",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorMode": "builder",
+                        "expr": "cluster_power_draw",
+                        "legendFormat": "Cluster",
+                        "range": true
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 8,
+          "links": [],
+          "title": "Power Usage (Past 15 Minutes)",
+          "vizConfig": {
+            "group": "timeseries",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "continuous-GrYlRd"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 20,
+                    "gradientMode": "scheme",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "smooth",
+                    "lineWidth": 3,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": 0
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "hidden",
+                  "placement": "right",
+                  "showLegend": false
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              }
+            },
+            "version": "12.2.0"
+          }
+        }
       }
     },
     "layout": {
@@ -837,8 +988,8 @@
                 "kind": "ElementReference",
                 "name": "panel-4"
               },
-              "height": 9,
-              "width": 12,
+              "height": 10,
+              "width": 6,
               "x": 0,
               "y": 18
             }
@@ -850,7 +1001,20 @@
                 "kind": "ElementReference",
                 "name": "panel-7"
               },
-              "height": 9,
+              "height": 10,
+              "width": 6,
+              "x": 6,
+              "y": 18
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-8"
+              },
+              "height": 10,
               "width": 12,
               "x": 12,
               "y": 18
