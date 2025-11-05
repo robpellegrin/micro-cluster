@@ -20,6 +20,8 @@
 #   of the cluster.
 #
 
+source .env
+
 OUTPUT_FILE="/tmp/cluster-stats.output"
 
 cleanup() {
@@ -62,10 +64,23 @@ get_node_stats() {
   echo
 }
 
+get_power_state() {
+  POWER=$(curl -s \
+    -H "Authorization: Bearer $TOKEN" \
+    -H "Content-Type: application/json" \
+    "$HA_ADDRESS"/api/states/sensor.third_reality_inc_3rsp02028bz_power |
+    jq -r '.state')
+
+  echo cluster_power_draw{host=\"cluster\"} $POWER
+}
+
 # Function must be exported before it can be used with GNU Parallel.
 export -f get_node_stats
 
 # IP scheme for cluster is 192.168.5.5x
 parallel get_node_stats ::: 192.168.5.5{0..6} >>$OUTPUT_FILE
 
+get_power_state >>$OUTPUT_FILE
+
 exit 0
+
