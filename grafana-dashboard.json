@@ -3,20 +3,10 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "adnb9nr",
-    "namespace": "default",
-    "uid": "37kiyH3gsyQ8TdHbHq7m0kxM1XXdtbxsF9VEIX4Xh7IX",
-    "resourceVersion": "40",
-    "generation": 44,
+    "generation": 54,
     "creationTimestamp": "2025-10-18T22:29:17Z",
-    "labels": {
-      "grafana.app/deprecatedInternalID": "1"
-    },
-    "annotations": {
-      "grafana.app/createdBy": "user:ef0qy95vji39cf",
-      "grafana.app/updatedBy": "user:ef0qy95vji39cf",
-      "grafana.app/updatedTimestamp": "2025-11-04T16:41:37Z",
-      "grafana.app/saved-from-ui": "Grafana v12.2.0 (92f1fba9b4)"
-    }
+    "labels": {},
+    "annotations": {}
   },
   "spec": {
     "annotations": [
@@ -29,9 +19,6 @@
           "iconColor": "rgba(0, 211, 255, 1)",
           "name": "Annotations & Alerts",
           "query": {
-            "datasource": {
-              "name": "-- Grafana --"
-            },
             "group": "grafana",
             "kind": "DataQuery",
             "spec": {},
@@ -55,9 +42,6 @@
                   "spec": {
                     "hidden": false,
                     "query": {
-                      "datasource": {
-                        "name": "bf1gobcluv2f4a"
-                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -147,7 +131,7 @@
               "options": {
                 "legend": {
                   "calcs": [
-                    "lastNotNull"
+                    "last"
                   ],
                   "displayMode": "table",
                   "placement": "right",
@@ -176,9 +160,6 @@
                   "spec": {
                     "hidden": false,
                     "query": {
-                      "datasource": {
-                        "name": "bf1gobcluv2f4a"
-                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -265,7 +246,7 @@
               "options": {
                 "legend": {
                   "calcs": [
-                    "lastNotNull"
+                    "last"
                   ],
                   "displayMode": "table",
                   "placement": "right",
@@ -294,9 +275,6 @@
                   "spec": {
                     "hidden": false,
                     "query": {
-                      "datasource": {
-                        "name": "bf1gobcluv2f4a"
-                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -319,9 +297,6 @@
                   "spec": {
                     "hidden": false,
                     "query": {
-                      "datasource": {
-                        "name": "bf1gobcluv2f4a"
-                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -343,9 +318,6 @@
                   "spec": {
                     "hidden": false,
                     "query": {
-                      "datasource": {
-                        "name": "bf1gobcluv2f4a"
-                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -489,9 +461,6 @@
                   "spec": {
                     "hidden": false,
                     "query": {
-                      "datasource": {
-                        "name": "bf1gobcluv2f4a"
-                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -577,7 +546,7 @@
               "options": {
                 "legend": {
                   "calcs": [
-                    "lastNotNull"
+                    "last"
                   ],
                   "displayMode": "table",
                   "placement": "right",
@@ -606,9 +575,6 @@
                   "spec": {
                     "hidden": false,
                     "query": {
-                      "datasource": {
-                        "name": "bf1gobcluv2f4a"
-                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -645,7 +611,7 @@
                     "mode": "thresholds"
                   },
                   "fieldMinMax": false,
-                  "max": 2010000,
+                  "max": 1967464,
                   "min": 0,
                   "thresholds": {
                     "mode": "percentage",
@@ -705,17 +671,17 @@
                   "spec": {
                     "hidden": false,
                     "query": {
-                      "datasource": {
-                        "name": "bf1gobcluv2f4a"
-                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
                         "editorMode": "builder",
+                        "exemplar": false,
                         "expr": "node_swap_used{instance=\"localhost:2146\"}",
+                        "format": "heatmap",
+                        "instant": true,
                         "interval": "",
                         "legendFormat": "{{host}}",
-                        "range": true
+                        "range": false
                       },
                       "version": "v0"
                     },
@@ -732,47 +698,13 @@
           "links": [],
           "title": "Swap Usage (Past 15 Minutes)",
           "vizConfig": {
-            "group": "timeseries",
+            "group": "bargauge",
             "kind": "VizConfig",
             "spec": {
               "fieldConfig": {
                 "defaults": {
                   "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "barWidthFactor": 0.6,
-                    "drawStyle": "bars",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "showValues": false,
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
+                    "mode": "continuous-GrYlRd"
                   },
                   "thresholds": {
                     "mode": "absolute",
@@ -783,27 +715,37 @@
                       },
                       {
                         "color": "red",
-                        "value": 1
+                        "value": 80
                       }
                     ]
-                  }
+                  },
+                  "unit": "decbytes"
                 },
                 "overrides": []
               },
               "options": {
+                "displayMode": "basic",
                 "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "maxVizHeight": 300,
+                "minVizHeight": 16,
+                "minVizWidth": 8,
+                "namePlacement": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
                   "calcs": [
                     "last"
                   ],
-                  "displayMode": "list",
-                  "placement": "right",
-                  "showLegend": true
+                  "fields": "",
+                  "values": false
                 },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                }
+                "showUnfilled": true,
+                "sizing": "auto",
+                "valueMode": "color"
               }
             },
             "version": "12.2.0"
@@ -822,9 +764,6 @@
                   "spec": {
                     "hidden": false,
                     "query": {
-                      "datasource": {
-                        "name": "bf1gobcluv2f4a"
-                      },
                       "group": "prometheus",
                       "kind": "DataQuery",
                       "spec": {
@@ -874,6 +813,9 @@
                     },
                     "insertNulls": false,
                     "lineInterpolation": "smooth",
+                    "lineStyle": {
+                      "fill": "solid"
+                    },
                     "lineWidth": 3,
                     "pointSize": 5,
                     "scaleDistribution": {
@@ -890,6 +832,8 @@
                       "mode": "off"
                     }
                   },
+                  "fieldMinMax": false,
+                  "min": 0,
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -902,16 +846,49 @@
                         "value": 80
                       }
                     ]
-                  }
+                  },
+                  "unit": "watt"
                 },
-                "overrides": []
+                "overrides": [
+                  {
+                    "__systemRef": "hideSeriesFrom",
+                    "matcher": {
+                      "id": "byNames",
+                      "options": {
+                        "mode": "exclude",
+                        "names": [
+                          "Cluster"
+                        ],
+                        "prefix": "All except:",
+                        "readOnly": true
+                      }
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom",
+                        "value": {
+                          "legend": false,
+                          "tooltip": true,
+                          "viz": true
+                        }
+                      }
+                    ]
+                  }
+                ]
               },
               "options": {
                 "legend": {
-                  "calcs": [],
-                  "displayMode": "hidden",
-                  "placement": "right",
-                  "showLegend": false
+                  "calcs": [
+                    "last",
+                    "max",
+                    "min",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true,
+                  "sortBy": "Name",
+                  "sortDesc": false
                 },
                 "tooltip": {
                   "hideZeros": false,
