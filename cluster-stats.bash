@@ -12,14 +12,18 @@
 #     - Total and used memory
 #     - 1, 5, and 15-minute load averages
 #
-#   and writes them to a file 'output.txt'.
+#   and writes them to a file '/tmp/cluster-stats.output'.
 #
 #   All commands are designed to be lightweight and minimal, using data
 #   from /proc and /sys to minimize CPU, memory, and I/O overhead. The goal is
 #   to collect useful metrics without negatively impacting with the performance
 #   of the cluster.
 #
+#   After collecting system stats, this script then queries Home Assistant to
+#   retrieve information about the current power draw of the cluster.
+#
 
+# This file contains the values for HA_ADDRESS and TOKEN.
 source .env
 
 OUTPUT_FILE="/tmp/cluster-stats.output"
@@ -35,6 +39,12 @@ trap cleanup SIGINT SIGTERM SIGHUP SIGQUIT
 
 get_node_stats() {
   IP_ADDRESS=$1
+
+  # Ping once, wait at most 1 second for a reply, suppress all output.
+  # This makes sure the node is online before attempting SSH.
+  if ! ping -c 1 -W 1 -q "$IP_ADDRESS" >/dev/null 2>&1; then
+    exit 1
+  fi
 
   read -r HOSTNAME CPU_TEMP CPU_FREQ MEM_TOTAL MEM_USED SWAP_USED LOAD1 LOAD5 LOAD15 <<<$(ssh mpi@$IP_ADDRESS '
     HOSTNAME=$(cat /etc/hostname)
@@ -53,6 +63,11 @@ get_node_stats() {
     echo "$HOSTNAME $CPU_TEMP $CPU_FREQ $MEM_TOTAL $MEM_USED $SWAP_USED $LOAD1 $LOAD5 $LOAD15"
   ')
 
+  # If these values don't exist, something went wrong.
+  if [[ -z $HOSTNAME || -z $CPU_TEMP ]]; then
+    exit 1
+  fi
+
   echo "node_temp{host=\"$HOSTNAME\"} $CPU_TEMP"
   echo "node_freq{host=\"$HOSTNAME\"} $CPU_FREQ"
   echo "node_total_mem{host=\"$HOSTNAME\"} $MEM_TOTAL"
@@ -62,6 +77,7 @@ get_node_stats() {
   echo "node_load5{host=\"$HOSTNAME\"} $LOAD5"
   echo "node_load15{host=\"$HOSTNAME\"} $LOAD15"
   echo
+
 }
 
 get_power_state() {
@@ -83,4 +99,3 @@ parallel get_node_stats ::: 192.168.5.5{0..6} >>$OUTPUT_FILE
 get_power_state >>$OUTPUT_FILE
 
 exit 0
-
