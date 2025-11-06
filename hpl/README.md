@@ -37,8 +37,8 @@ For whatever reason, the pre‑compiled binaries shipped with Armbian caused int
 
   | Library | GFLOPS | Notes |
   |---------|--------|-------|
-  | OpenBLAS v0.3.30 (ARMv8) | [**25.308**](https://github.com/robpellegrin/micro-cluster/blob/main/hpl/hpl_results/hpl_run_2025-11-03_09-23-00.log) | ~100% faster than ATLAS |
-  | ATLAS (pre‑compiled Debian) | - | Default distribution package |
+  | OpenBLAS v0.3.30 (ARMv8) | [**25.308**](https://github.com/robpellegrin/micro-cluster/blob/main/hpl/hpl_results/hpl_run_2025-11-03_09-23-00.log) | ~150% faster than ATLAS |
+  | ATLAS (pre‑compiled Debian) | [**10.049**](https://github.com/robpellegrin/micro-cluster/blob/main/hpl/hpl_results/xhpl_run_2025-10-11_22-37-29.log) | Default distribution package |
 
 
 ## 6. References
