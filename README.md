@@ -127,7 +127,7 @@ From this data, we get the following:
 | Idle  | `16.1w` | `11.6w` | `12.6w` |
 | Under Load | `34.5w` | `26.8w` | `30.1w`|
 
-These measurements show that the entire cluster draws only ≈ 30 W under full load—roughly the power of a single laptop—demonstrating that a low‑power SBC cluster is an exceptionally cost‑effective platform for experimenting with distributed systems.
+These measurements show that the entire cluster draws only ≈ 30 watts under full load—roughly the power of a single laptop—demonstrating that a low‑power SBC cluster is an exceptionally cost‑effective platform for experimenting with distributed systems.
 
 # Using Ansible to Preserve Sanity
 
