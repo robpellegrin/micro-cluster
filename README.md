@@ -1,7 +1,7 @@
 # micro-cluster
 Experiments with distributed algorithms and data structures on a cluster of small single board computers using OpenMPI.
 
-*Nothing here is meant to be a how‑to guide.*
+*Nothing here is meant to serve as a how‑to guide.*
 
 # Table of Contents
 - [micro-cluster](#micro-cluster)
@@ -162,6 +162,7 @@ The playbooks/roles used to manage this cluster are in a dedicated ansible repos
 | Prometheus              | https://prometheus.io/                              |
 | OpenMPI                 | https://www.open-mpi.org/                           |
 | Home Assistant REST API | https://developers.home-assistant.io/docs/api/rest/ |
+| GNU Parallel            | https://www.gnu.org/software/parallel/              |
 | ntfy                    | https://docs.ntfy.sh/install/                       |
 
 ---

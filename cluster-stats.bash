@@ -22,6 +22,9 @@
 #   After collecting system stats, this script then queries Home Assistant to
 #   retrieve information about the current power draw of the cluster.
 #
+#   Depends on:
+#		- GNU Parallel: https://www.gnu.org/software/parallel/
+#		- Passwordless SSH
 
 # This file contains the values for HA_ADDRESS and TOKEN.
 source .env
@@ -93,7 +96,8 @@ get_power_state() {
 # Function must be exported before it can be used with GNU Parallel.
 export -f get_node_stats
 
-# IP scheme for cluster is 192.168.5.5x
+# IP scheme for cluster is 192.168.5.5x.
+# Use GNU Parallel to execute all iterations of the loop in parallel.
 parallel get_node_stats ::: 192.168.5.5{0..6} >>$OUTPUT_FILE
 
 get_power_state >>$OUTPUT_FILE
