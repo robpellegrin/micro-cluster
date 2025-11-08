@@ -15,6 +15,7 @@ Experiments with distributed algorithms and data structures on a cluster of smal
   - [What We're Watching and Why](#what-were-watching-and-why)
   - [Prometheus](#prometheus)
   - [Grafana](#grafana)
+  - [Configuring Alerts](#configuring-alerts)
 - [Performance](#performance)
   - [A Note on Hardware Limitations](#a-note-on-hardware-limitations)
 - [Power Consumption](#power-consumption)
@@ -47,11 +48,11 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 | **Power**       | `5 W full load / < 1 W idle`                                                         |
 
 ## 🧩 Networking
-| Component     | Description                                                                                               |
-| ------------- | --------------------------------------------------------------------------------------------------------- |
+| Component     | Description                                                                                                       |
+| ------------- | ----------------------------------------------------------------------------------------------------------------- |
 | **Switch**    | [**TP-Link 8 Port Gigabit Switch**](https://www.amazon.com/TP-Link-Gigabit-Ethernet-Network-Switch/dp/B00A121WN6) |
-| **Topology**  | `Star`                                                                                                    |
-| **IP Scheme** | `192.168.5.50–56`                                                                                         |
+| **Topology**  | `Star`                                                                                                            |
+| **IP Scheme** | `192.168.5.50–56`                                                                                                 |
 
 ## ⚡ Power & Cooling
 | Component                   | Description             |
@@ -93,9 +94,23 @@ scrape_configs:
 ```
 
 ## Grafana
-**Grafana** is a visualization platform that consumes Prometheus (and other data sources), making it simple to build interactive dashboards, set alerts, and monitor the collected metrics at a glance.
+**Grafana** is an open-source visualization platform that consumes data from Prometheus (as well as other sources), making it simple to build interactive dashboards, set alerts, and monitor the collected metrics at a glance.
 
 After installing Grafana, import `grafana-dashboard.json`.
+
+## Configuring Alerts
+Grafana’s built‑in alerting gives you instant notifications for undesirable conditions, such as dips in CPU frequency, swap usage, node failures, etc.
+
+I opted for a self‑hosted [ntfy](https://docs.ntfy.sh/install/) instance to serve as the central hub for Grafana notifications, which even offers a dedicated [Android app](https://play.google.com/store/apps/details?id=io.heckel.ntfy) for alerts on the go.
+
+Setting up a Webhook channel
+
+1. Grafana → Alerting → Notification channels → Add channel  
+2. Choose Webhook as the channel type.  
+3. Paste the webhook URL provided by your ntfy instance (e.g., https://ntfy.example.com/your‑topic).  
+4. Give the channel a name and click Save.
+
+You can now attach this channel to any alert rule in Grafana. Test the configuration by sending a test notification from ntfy or by triggering a rule in Grafana’s Alerting UI.
 
 # Performance
 For more on performance, see the [`hpl`](https://github.com/robpellegrin/micro-cluster/tree/main/hpl) directory.
@@ -124,10 +139,10 @@ For real‑time power monitoring I used a [THIRDREALITY Zigbee Smart Plug](https
 The data from Home Assistant can be easily exported into a CSV for numerical analysis.  
 From this data, we get the following:
 
-| State | Max |  Min | Mean |
-|-------|-----|------|-----|
-| Idle  | `16.1w` | `11.6w` | `12.6w` |
-| Under Load | `34.5w` | `26.8w` | `30.1w`|
+| State      | Max     | Min     | Mean    |
+| ---------- | ------- | ------- | ------- |
+| Idle       | `16.1w` | `11.6w` | `12.6w` |
+| Under Load | `34.5w` | `26.8w` | `30.1w` |
 
 These measurements show that the entire cluster draws only ≈ 30 watts under full load—roughly the power of a single laptop—demonstrating that a low‑power SBC cluster is an exceptionally cost‑effective platform for experimenting with distributed systems.
 
@@ -139,13 +154,14 @@ The playbooks/roles used to manage this cluster are in a dedicated ansible repos
 - https://github.com/robpellegrin/ansible
 
 # References
-| Site | URL
-|--    |--
-| Armbian | https://www.armbian.com/ |
-| Ansible Docs | https://docs.ansible.com/ |
-| Grafana | https://grafana.com/ |
-| Prometheus | https://prometheus.io/ |
-| OpenMPI | https://www.open-mpi.org/ |
+| Site                    | URL                                                 |
+| ----------------------- | --------------------------------------------------- |
+| Armbian                 | https://www.armbian.com/                            |
+| Ansible Docs            | https://docs.ansible.com/                           |
+| Grafana                 | https://grafana.com/                                |
+| Prometheus              | https://prometheus.io/                              |
+| OpenMPI                 | https://www.open-mpi.org/                           |
 | Home Assistant REST API | https://developers.home-assistant.io/docs/api/rest/ |
+| ntfy                    | https://docs.ntfy.sh/install/                       |
 
 ---
