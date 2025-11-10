@@ -16,6 +16,11 @@ Experiments with distributed algorithms and data structures on a cluster of smal
   - [Prometheus](#prometheus)
   - [Grafana](#grafana)
   - [Configuring Alerts](#configuring-alerts)
+- [Software](#software)
+  - [SLURM](#slurm)
+    - [munge](#munge)
+    - [Setup SLURM](#setup-slurm)
+  - [OpenMPI](#openmpi)
 - [Performance](#performance)
   - [A Note on Hardware Limitations](#a-note-on-hardware-limitations)
 - [Power Consumption](#power-consumption)
@@ -111,6 +116,79 @@ Setting up a Webhook channel
 4. Give the channel a name and click Save.
 
 You can now attach this channel to any alert rule in Grafana. Test the configuration by sending a test notification from ntfy or by triggering a rule in Grafana’s Alerting UI.
+
+# Software
+
+## SLURM
+[**SLURM**](https://slurm.schedmd.com/overview.html) (Simple Linux Utility for Resource Management) is a popular open‑source workload manager that schedules jobs, allocates resources, and monitors execution on a cluster.
+  
+On a small SBC cluster it may feel like overkill, but it gives you a familiar CLI, job‑dependency handling, as well as automatic node‑level isolation and failure recovery.
+
+### munge
+SLURM relies on **munge** (MUNGE Authentication Daemon) to authenticate every intra‑cluster communication.  
+When a job is submitted or a node reports its status, SLURM daemons (`slurmctld`, `slurmd`, `srun`, …) exchange a short “ticket” containing the user’s UID and a timestamp.  Munge signs this ticket with a shared secret key that is known only to the nodes in the cluster; the recipient verifies the signature before accepting the request.
+  
+Install munge and its libraries:
+
+```
+sudo apt isntall munge libmunge2 libmunge-dev -y
+```
+
+Pick a node to serve as the control node, then copy `/etc/munge/munge.key` from that node to all of the other nodes with `rsync` or `scp`.
+> Be sure the file is owned by munge:munge and has mode 600!
+
+Finally, start munge:
+```
+sudo systemctl enable --now munge.service
+```
+
+### Setup SLURM
+
+```
+sudo apt install slurm-wlm -y
+```
+
+
+Copy the config file to `/etc/slurm/slurm.conf` on every machine.
+> You can easily generate the config using the following tool provided by the SLURM developers: 
+> * https://slurm.schedmd.com/configurator.html
+  
+
+Start and enable SLURM:
+```
+# On the control node
+sudo systemctl enable --now slurmctld.service
+
+# On every worker node
+sudo systemctl enable --now slurmd.service
+```
+
+With both daemons running, you can submit MPI jobs via sbatch, monitor queues with squeue, and let SLURM handle scheduling and fault tolerance automatically.
+
+## OpenMPI
+
+If you're going to use SLURM, you should consider building the most recent version of OpenMPI from source and building with `--with-slurm` and `--with-pmix`.
+
+```
+# Download OpenMPI
+wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.8.tar.gz
+
+# Extract
+tar -xzf openmpi-5.0.8.tar.gx
+cd openmpi-5.0.8
+
+# Configure
+./configure --prefix=/opt/openmpi --with-slurm --with-pmix
+
+# Make and install
+make -j$(nproc)
+make install
+```
+
+Without slurm, the default package provided in the Armbian repos is good enough. Install it with:
+```
+sudo apt instal libopenmpi-dev
+```
 
 # Performance
 For more on performance, see the [`hpl`](https://github.com/robpellegrin/micro-cluster/tree/main/hpl) directory.
