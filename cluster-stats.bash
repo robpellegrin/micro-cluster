@@ -22,36 +22,19 @@
 #   After collecting system stats, this script then queries Home Assistant to
 #   retrieve information about the current power draw of the cluster.
 #
-#   Depends on:
-#		- GNU Parallel: https://www.gnu.org/software/parallel/
-#		- Passwordless SSH
 
 # This file contains the values for HA_ADDRESS and TOKEN.
 source .env
 
 OUTPUT_FILE="/tmp/cluster-stats.output"
 
-cleanup() {
-  echo
-  echo "Cleaning up and exiting..."
-  rm -rf $OUTPUT_FILE
-  exit 0
-}
-
-trap cleanup SIGINT SIGTERM SIGHUP SIGQUIT
-
 get_node_stats() {
   IP_ADDRESS=$1
 
-  # Ping once, wait at most 1 second for a reply, suppress all output.
-  # This makes sure the node is online before attempting SSH.
-  if ! ping -c 1 -W 1 -q "$IP_ADDRESS" >/dev/null 2>&1; then
-    exit 1
-  fi
-
-  read -r HOSTNAME CPU_TEMP CPU_FREQ MEM_TOTAL MEM_USED SWAP_USED LOAD1 LOAD5 LOAD15 <<<$(ssh mpi@$IP_ADDRESS '
-    HOSTNAME=$(cat /etc/hostname)
-    CPU_TEMP=$(cat /sys/class/thermal/thermal_zone0/temp)
+  read -r HOSTNAME CPU_TEMP CPU_FREQ MEM_TOTAL MEM_USED SWAP_USED LOAD1 LOAD5 LOAD15 <<<$(ssh \
+    -o ConnectTimeout=1 mpi@$IP_ADDRESS '
+    read -r HOSTNAME < /etc/hostname
+    read -r CPU_TEMP < /sys/class/thermal/thermal_zone0/temp
     read -r LOAD1 LOAD5 LOAD15 _ < /proc/loadavg
 
     CPU_FREQ=$(awk "{ sum += \$1; count++ } END { print sum / count }" \
@@ -66,40 +49,42 @@ get_node_stats() {
     echo "$HOSTNAME $CPU_TEMP $CPU_FREQ $MEM_TOTAL $MEM_USED $SWAP_USED $LOAD1 $LOAD5 $LOAD15"
   ')
 
-  # If these values don't exist, something went wrong.
-  if [[ -z $HOSTNAME || -z $CPU_TEMP ]]; then
-    exit 1
-  fi
+  # Guard against SSH failure
+  [[ -z $HOSTNAME || -z $CPU_TEMP ]] && exit 1
 
-  echo "node_temp{host=\"$HOSTNAME\"} $CPU_TEMP"
-  echo "node_freq{host=\"$HOSTNAME\"} $CPU_FREQ"
-  echo "node_total_mem{host=\"$HOSTNAME\"} $MEM_TOTAL"
-  echo "node_used_mem{host=\"$HOSTNAME\"} $MEM_USED"
-  echo "node_swap_used{host=\"$HOSTNAME\"} $SWAP_USED"
-  echo "node_load1{host=\"$HOSTNAME\"} $LOAD1"
-  echo "node_load5{host=\"$HOSTNAME\"} $LOAD5"
-  echo "node_load15{host=\"$HOSTNAME\"} $LOAD15"
-  echo
-
+  printf '%s\n' \
+    "node_temp{host=\"$HOSTNAME\"} $CPU_TEMP" \
+    "node_freq{host=\"$HOSTNAME\"} $CPU_FREQ" \
+    "node_total_mem{host=\"$HOSTNAME\"} $MEM_TOTAL" \
+    "node_used_mem{host=\"$HOSTNAME\"} $MEM_USED" \
+    "node_swap_used{host=\"$HOSTNAME\"} $SWAP_USED" \
+    "node_load1{host=\"$HOSTNAME\"} $LOAD1" \
+    "node_load5{host=\"$HOSTNAME\"} $LOAD5" \
+    "node_load15{host=\"$HOSTNAME\"} $LOAD15" \
+    ""
 }
 
 get_power_state() {
   POWER=$(curl -s \
     -H "Authorization: Bearer $TOKEN" \
     -H "Content-Type: application/json" \
-    "$HA_ADDRESS"/api/states/sensor.third_reality_inc_3rsp02028bz_power |
+    "$HA_ADDRESS"/api/states/sensor.cluster_power |
     jq -r '.state')
 
-  echo cluster_power_draw{host=\"cluster\"} $POWER
+  # Guard against curl failure
+  [[ -z $POWER ]] && exit 1
+
+  printf '%s\n\n' "cluster_power_draw{host=\"cluster\"} $POWER"
+
 }
+
+# Run power query asynchronously
+coproc { get_power_state >$OUTPUT_FILE; }
 
 # Function must be exported before it can be used with GNU Parallel.
 export -f get_node_stats
 
-# IP scheme for cluster is 192.168.5.5x.
-# Use GNU Parallel to execute all iterations of the loop in parallel.
+# IP scheme for cluster is 192.168.5.5{0..6}.
 parallel get_node_stats ::: 192.168.5.5{0..6} >>$OUTPUT_FILE
-
-get_power_state >>$OUTPUT_FILE
 
 exit 0
