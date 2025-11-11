@@ -26,7 +26,9 @@ Experiments with distributed algorithms and data structures on a cluster of smal
 - [Power Consumption](#power-consumption)
   - [Graph of Power Usage](#graph-of-power-usage)
   - [Analysis](#analysis)
-- [Using Ansible to Preserve Sanity](#using-ansible-to-preserve-sanity)
+- [Tools to Preserve Sanity](#tools-to-preserve-sanity)
+  - [Ansible](#ansible)
+  - [GNU Parallel](#gnu-parallel)
 - [References](#references)
 
 # Hardware
@@ -224,12 +226,21 @@ From this data, we get the following:
 
 These measurements show that the entire cluster draws only ≈ 30 watts under full load—roughly the power of a single laptop—demonstrating that a low‑power SBC cluster is an exceptionally cost‑effective platform for experimenting with distributed systems.
 
-# Using Ansible to Preserve Sanity
+# Tools to Preserve Sanity
 
+## Ansible
 [Ansible](https://docs.ansible.com/ansible/latest/index.html) is a critical component of cluster operations. Without it we would be manually SSH‑ing into each node (one at a time), installing packages, compiling OpenBLAS, deploying HPL, etc. Ansible allows us to define the desired state of every node in a single, idempotent playbook and execute those changes on all hosts simultaneously. This guarantees identical configuration across the cluster and, most importantly, eliminates monotonous SSH sessions.
 
 The playbooks/roles used to manage this cluster are in a dedicated ansible repository:
 - https://github.com/robpellegrin/ansible
+
+## GNU Parallel
+For situations where creating a playbook for a one-off task feels like too much work, there’s [GNU Parallel](https://www.gnu.org/software/parallel/). It allows commands to be executed concurrently across multiple nodes (or cores) directly from the command line. This is especially useful for quick experiments or bulk operations that don’t justify a full automation workflow.
+
+As a simple example, the following command will ssh into each node on the cluster and output its hostname, in parallel:
+```
+parallel ssh mpi@192.168.5.5{} 'echo "Hostname: $(hostname)"' ::: {0..6}
+```
 
 # References
 | Site                    | URL                                                 |
